@@ -37,7 +37,7 @@ find_root: ;void find_root(EFI_HANDLE *ImageHandle(rcx), EFI_SYSTEM_TABLE *Syste
     call rax
     mov rbx, [LoadedImage]
     add rbx, 0x18
-    mov rcx, rbx
+    mov rcx, [rbx]
     mov rsi, [rsp+8]
     mov r8, [BlockIO]
     mov rax, [rsi+0x98]
@@ -67,11 +67,37 @@ find_root: ;void find_root(EFI_HANDLE *ImageHandle(rcx), EFI_SYSTEM_TABLE *Syste
     xor rax, rax
     add rsp, 0x28 ;
     ;todo: main함수 작성이 끝나면 검토 후 본 함수 코드 일부 수정
+    ;fix: 오프셋 계산 전체 다시해야함.
     ret
 
 
 read_sector:
-    ;-
+    sub rsp, 0x38
+    mov rax, [BlockIO]
+    add rax, 0x18
+    push rcx
+    push rdx
+    push r8
+    push r9
+    lea rcx, [BlockIO]
+    mov rdx, [MediaId]
+    mov r9, [BlockSize]
+    lea r10, [BufferOfSector]
+    mov [rsp+0x20], r10
+    call rax
+    pop r9
+    pop r8
+    pop rdx
+    pop rcx
+    cmp rax, 0x8000000000000000
+    jne if1
+    mov rax, 1
+    add rsp, 0x38
+    ret
+    if1:
+    add rsp, 0x38
+    xor rax, rax
+    ret
 
 main:
     ;-
