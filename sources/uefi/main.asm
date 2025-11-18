@@ -61,7 +61,13 @@ find_root: ;void find_root(EFI_HANDLE *ImageHandle(rcx), EFI_SYSTEM_TABLE *Syste
     mov r13, [r12]
     add r13, 5
     mov [Removable], r13
-
+    pop r8
+    pop rdx
+    pop rcx
+    xor rax, rax
+    add rsp, 0x28 ;
+    ;todo: main함수 작성이 끝나면 검토 후 본 함수 코드 일부 수정
+    ret
 
 
 read_sector:
@@ -69,4 +75,4 @@ read_sector:
 
 main:
     ;-
-ㅌㅌㅌ
+
