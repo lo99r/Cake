@@ -45,12 +45,12 @@ find_root: ;void find_root(EFI_HANDLE *ImageHandle(rcx), EFI_SYSTEM_TABLE *Syste
     mov r12, [BlockIO]
     add r12, 0x8
     mov r13, [r12]
-    add r13, 9
+    add r13, 12
     mov [BlockSize], r13
     mov r12, [BlockIO]
     add r12, 8
     mov r13, [r12]
-    add r13, 18
+    add r13, 0x18
     mov [LastBlock], r13
     mov r12, [BlockIO]
     add r12, 8
@@ -59,7 +59,7 @@ find_root: ;void find_root(EFI_HANDLE *ImageHandle(rcx), EFI_SYSTEM_TABLE *Syste
     mov r12, [BlockIO]
     add r12, 8
     mov r13, [r12]
-    add r13, 5
+    add r13, 4
     mov [Removable], r13
     pop r8
     pop rdx
@@ -100,5 +100,13 @@ read_sector:
     ret
 
 main:
-    ;-
+    call find_root
+    xor r8, r8
+    sloop1:
+    call read_sector
+    inc r8
+    cmp rax, 0
+    je eloop1
+    lea r15, [BufferOfSector]
+    ;todo: 뒤에 구현
 
